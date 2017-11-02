@@ -1,0 +1,30 @@
+{
+  "name": "engagement-timer-google-analytics",
+  "version": "2.0.0",
+  "description": "User time on page engagement timer.",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "node_modules/karma/bin/karma start karma.conf.js  --singleRun"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LunaMetrics/engagement-timer-google-analytics"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "~0.12.0",
+    "grunt-contrib-uglify": "^0.9.1",
+    "jasmine-core": "^2.8.0",
+    "js-beautify": "^1.7.4",
+    "karma": "^1.7.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "phantomjs-prebuilt": "^2.1.15"
+  },
+  "author": "LunaMetrics, LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LunaMetrics/engagement-timer-google-analytics/issues"
+  },
+  "homepage": "https://github.com/LunaMetrics/engagement-timer-google-analytics#readme"
+}
