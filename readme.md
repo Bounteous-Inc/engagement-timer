@@ -1,6 +1,6 @@
 # Engagement Timer
 
-Library for observing page engagement. Register handlers to fire when a specified number of seconds of engaged time have passed or every `n` seconds. Can optionally go "idle" when a user stops engaging with the page or switches tabs and target a specific page element. scrolling behavior. Register handlers to fire when a user scrolls past a custom percentage, pixel depth, or selector-picked element. Compatible with nested scrolling areas (e.g. overflows). Tested on:
+Library for observing page engagement. Register handlers to fire when a specified number of seconds of engaged time have passed or every `n` seconds. Can optionally go "idle" when a user stops engaging with the page or switches tabs and target a specific page element. Tested on:
 
 - Internet Explorer 9+
 - Edge 16
@@ -40,7 +40,7 @@ A pre-built Google Tag Manager container is included in the repository for downl
 
 ## Installation & Documentation
 
-For installation instructions and complete documentation, visit [http://www.lunametrics.com/labs/recipes/engagement-timer/#documentation](http://www.lunametrics.com/labs/recipes/scroll-tracking/#documentation).
+For installation instructions and complete documentation, visit [http://www.lunametrics.com/labs/recipes/engagement-timer/#documentation](http://www.lunametrics.com/labs/recipes/engagement-timer/#documentation).
 
 ## License
 
