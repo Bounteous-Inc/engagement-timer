@@ -15,6 +15,7 @@ To get started, install the script in your project and set up a tracker.
 var timer = EngagementTimer({
   every: [10]
 });
+timer.start();
 ```
 
 The example timer will emit `interval` events every 10 seconds. To register a handler on these events, call the `EngagementTimer#on` method.

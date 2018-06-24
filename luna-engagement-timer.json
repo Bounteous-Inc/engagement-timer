@@ -1,28 +1,53 @@
 {
     "exportFormatVersion": 2,
-    "exportTime": "2017-11-02 15:45:28",
+    "exportTime": "2018-06-24 17:16:13",
     "containerVersion": {
-        "path": "accounts/28896164/containers/1635401/versions/0",
-        "accountId": "28896164",
-        "containerId": "1635401",
+        "path": "accounts/263956808/containers/2187017/versions/0",
+        "accountId": "263956808",
+        "containerId": "2187017",
         "containerVersionId": "0",
         "container": {
-            "path": "accounts/28896164/containers/1635401",
-            "accountId": "28896164",
-            "containerId": "1635401",
+            "path": "accounts/263956808/containers/2187017",
+            "accountId": "263956808",
+            "containerId": "2187017",
             "name": "Engagement Timer",
-            "publicId": "GTM-P57R6J",
+            "publicId": "GTM-KZRPKJ",
             "usageContext": [
                 "WEB"
             ],
-            "fingerprint": "1494004492494",
-            "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/28896164/containers/1635401/workspaces?apiLink=container"
+            "fingerprint": "1494004709457",
+            "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/263956808/containers/2187017/workspaces?apiLink=container"
         },
         "tag": [
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "tagId": "2",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "tagId": "5",
+                "name": "CU - Engagement Timer - LunaMetrics Plugin",
+                "type": "html",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "html",
+                        "value": "<script id=\"gtm-engagement-timer\" type=\"text/javascript\">\n  /**\n   * Engagement Timer\n   *\n   * Measure time interacting with a given context. Pair with a visibility tracker\n   * for scroll-aware tracking.\n   *\n   * @example\n   * ```javascript\n   * var timer = EngagementTimer({\n   *   each: [5 * 60, 10*60],\n   *   every: [12],\n   *   context: '#content',\n   *   idleAfter: 5,\n   *   engagementEvents: ['click', 'mousedown', 'touchstart', 'keydown', 'scroll'],\n   *   startTime: +new Date,\n   *   idleOnVisibilityChange: true,\n   *   max: 60 * 15,\n   *   min: 10\n   * });\n   *\n   * timer.on('interval', function (evt) {\n   *\n   *   notifySomeService(evt.data.time);\n   *\n   * });\n   * ```\n   *\n   * Tested on:\n   * - Internet Explorer 9+\n   * - Edge 16\n   * - Chrome 62\n   * - Firefox 56\n   * - Opera 48\n   * - Safari 11\n   */\n  (function (document, window) {\n      'use strict';\n\n      window.EngagementTimer = window.EngagementTimer || EngagementTimer;\n\n      /**\n       * @name Interval\n       * @constructor\n       *\n       * @param {function} fn\n       * @param {number} interval - greater than 1000\n       */\n      function Interval(fn, interval) {\n\n          this._interval = interval;\n          this._fn = fn;\n\n          this.tick();\n\n      }\n\n      Interval.prototype.clear = function () {\n\n          this._cleared = true;\n\n      };\n\n      Interval.prototype.tick = function () {\n\n\n          setTimeout(function () {\n\n              if (this._cleared) {\n                  return;\n              }\n\n              this._fn();\n              this.tick();\n\n          }.bind(this), this._interval);\n\n      };\n\n      /**\n       * @name EngagementTimer\n       * Constructor for engagement timer\n       *\n       * @constructor\n       *\n       * @param opts {object} optsurations for timer\n       * @param opts.each {number[]} specific times to emit an event at, e.g. 4, 15\n       * @param opts.every {number[]} multiples to emit events every n seconds\n       * @param [opts.idleAfter] {number} number of seconds to wait before going idle and tracking pauses\n       * @param [opts.min] {number} minimum time in seconds before beginning to track events\n       * @param [opts.max] {number} maximum time in seconds to track events\n       * @param [opts.engagementEvents] {string[]} events to bind to that prevent idling\n       * @param [opts.idleOnVisibilityChange] {boolean} pause the timer when the tab is not visible\n       * @param [opts.startTime] {number} starting time to use when calculating time passed (defaults to when script runs or domInteractive timing)\n       * @param [opts.context] {HTMLElement|string} DOM element (or selector) to listen for engagementEvents on (defaults to document)\n       *\n       * @emits EngagementTimer#interval\n       * @emits EngagementTimer#reset\n       * @emits EngagementTimer#start\n       * @emits EngagementTimer#pause\n       * @emits EngagementTimer#idle\n       */\n      function EngagementTimer(opts) {\n\n          if (!opts.each && !opts.every) {\n              throw new Error('Requires opts.each or opts.every.');\n          }\n\n          if (\n              (opts.idleAfter || opts.engagementEvents) &&\n              !(opts.idleAfter && opts.engagementEvents && opts.engagementEvents.length)\n          ) {\n              throw new Error('Configure opts.idleAfter & opts.engagementEvents for idling.');\n          }\n\n          if (!(this instanceof EngagementTimer)) {\n              return new EngagementTimer(opts);\n          }\n\n          this._context = opts.context || document;\n\n          if (typeof this._context === 'string') {\n              this._context = document.querySelector(opts.context);\n          }\n          if (!this._context) {\n              throw new Error('Unable to find context ' + opts.context);\n          }\n\n          this._max = opts.max * 1000 || Infinity;\n          this._min = opts.min * 1000 || 0;\n          this._every = opts.every || [];\n          this._each = opts.each || [];\n          this._minInterval = 1000 * setGCD(this._every.concat(this._each));\n          this._each._originals = this._each.slice(0);\n          this._every._originals = this._every.slice(0);\n          this._idleAfter = opts.idleAfter * 1000 + 1 || null;\n          this._lastTick = opts.startTime || +new Date;\n          this._tickElapsed = 0;\n          this._trackedTime = 0;\n          this._running = false;\n          this._offset = 0;\n          this._events = {};\n          this._cache = {};\n\n          var throttledRestart = throttle(function () {\n\n              if (!this._running) {\n                  this.start();\n              }\n\n              this._resetIdleTimeout();\n\n          }.bind(this), this._idleTimeout / 2);\n\n          if (opts.engagementEvents) {\n\n              opts.engagementEvents.forEach(function (evt) {\n\n                  this._context.addEventListener(evt, throttledRestart);\n\n              }.bind(this));\n\n          }\n\n          if (opts.idleOnVisibilityChange) {\n\n              onVisibilityChange(function (isHidden) {\n\n                  isHidden ? this.pause() : this.start();\n\n              }.bind(this));\n\n          }\n\n      }\n\n      EngagementTimer.prototype._startTimer = function () {\n\n          this._Interval = new Interval(function () {\n\n              this._tick();\n              this._Interval.clear();\n              this._Interval = new Interval(this._tick.bind(this), this._minInterval);\n              this._tickElapsed = 0;\n\n          }.bind(this), this._minInterval - this._tickElapsed);\n\n      };\n\n      EngagementTimer.prototype._tick = function () {\n\n          var d = +new Date;\n\n          this._trackedTime += d - this._lastTick;\n          this._lastTick = d;\n\n          if (this._trackedTime < this._min) {\n              return;\n          }\n          if (this._trackedTime > this._max) {\n              this.destroy();\n              return;\n          }\n\n          this._checkMarks();\n\n      };\n\n      /**\n       * @param {string} evt\n       * @param {function} handler\n       */\n      EngagementTimer.prototype.on = function (evt, handler) {\n\n          if (!this._events[evt]) {\n              this._events[evt] = [];\n          }\n\n          this._events[evt].push(handler);\n\n      };\n\n      EngagementTimer.prototype.reset = function () {\n\n          this._each = this._each._originals.slice(0);\n          this._every = this._every._originals.slice(0);\n          this._lastTick = +new Date;\n          this._tickRemainder = 0;\n          this._trackedTime = 0;\n          this._cache = {};\n\n          this.emit('reset', {\n              data: {\n                  timestamp: +new Date\n              }\n          });\n\n      };\n\n      EngagementTimer.prototype.start = function () {\n\n          var d = +new Date;\n\n          if (this._running) {\n              return;\n          }\n\n          if (!this._idleTimer && this._idleAfter) {\n              this._resetIdleTimeout();\n          }\n\n          this._running = true;\n          this._startTimer();\n          this._lastTick = d - this._tickElapsed;\n\n          this.emit('start', {\n              data: {\n                  timestamp: d\n              }\n          });\n\n      };\n\n      EngagementTimer.prototype.pause = function () {\n\n          var d = +new Date;\n\n          this._tickElapsed = d - this._lastTick;\n          this._trackedTime += this._tickElapsed;\n\n          if (this._Interval) {\n              this._Interval.clear();\n          }\n\n          clearTimeout(this._idleTimer);\n\n          this._running = false;\n\n          this.emit('pause', {\n              data: {\n                  timestamp: +new Date\n              }\n          });\n\n      };\n\n      /**\n       * Emits events to registered handlers\n       *\n       * @param {string} name\n       * @param {object} data\n       */\n      EngagementTimer.prototype.emit = function (name, data) {\n\n          var handlers = this._events[name];\n\n          if (!handlers) return;\n\n          this._events[name].forEach(function (handler) {\n\n              setTimeout(function () {\n\n                  handler(data);\n\n              }, 0);\n\n          });\n\n      };\n\n      /**\n       * Cleans up after itself\n       */\n      EngagementTimer.prototype.destroy = function () {\n\n          if (this._Interval) {\n              this._Interval.clear();\n          }\n\n          clearTimeout(this._idleTimeout);\n\n      };\n\n      /**\n       * Checks the time elapsed and which times have been tracked\n       */\n      EngagementTimer.prototype._checkMarks = function () {\n\n          var curr = Math.floor(this._trackedTime / 1000);\n          var q = [];\n\n          loopAndCall(this._each, greaterThanCurr, checkMarksEachCb.bind(this));\n          loopAndCall(this._every, greaterThanCurr, checkMarksEveryCb.bind(this));\n\n          q.sort(numberSort).forEach(this._checkMark.bind(this));\n\n          /**\n           * @param {number} mark\n           *\n           * @returns {boolean}\n           */\n          function greaterThanCurr(mark) {\n\n              return curr >= mark;\n\n          }\n\n          /**\n           * @param {number} mark\n           * @param {number} index\n           * @param {Array} arr\n           *\n           * @returns {boolean}\n           */\n          function checkMarksEveryCb(mark, index, arr) {\n              /* jshint validthis: true */\n\n              var orig = this._every._originals[index];\n\n              q.push(mark);\n              arr[index] = ((mark / orig) + 1) * orig;\n\n          }\n\n          /**\n           * @param {number} mark\n           * @param {number} index\n           *\n           * @returns {boolean}\n           */\n          function checkMarksEachCb(mark, index) {\n              /* jshint validthis: true */\n\n              q = q.concat(this._each.slice(index, 1));\n\n          }\n\n      };\n\n      /**\n       * @param {number} mark\n       */\n      EngagementTimer.prototype._checkMark = function (mark) {\n\n          if (!this._cache[mark]) {\n\n              this._cache[mark] = true;\n              this.emit('interval', {\n                  data: {\n                      time: mark\n                  }\n              });\n\n          }\n\n      };\n\n\n      /**\n       * Resets the timeout for the idle counter\n       */\n      EngagementTimer.prototype._resetIdleTimeout = function () {\n\n          clearTimeout(this._idleTimer);\n\n          this._idleTimer = setTimeout(function () {\n\n              this.pause();\n              this.emit('idle', {\n                  data: {\n                      timestamp: +new Date\n                  }\n              });\n              this._idleTimer = null;\n\n          }.bind(this), this._idleAfter);\n\n      };\n\n      /**\n       * Loops through the array, applies the predicate, calls callback when true\n       *\n       * @param {Array} arr\n       * @param {function} predicate\n       * @param {function} cb\n       */\n      function loopAndCall(arr, predicate, cb) {\n\n          var i;\n\n          for (i = arr.length - 1; i >= 0; i--) {\n\n              if (predicate(arr[i])) {\n\n                  cb(arr[i], i, arr);\n\n              }\n\n          }\n\n      }\n\n      /**\n       * .sort() callback\n       *\n       * @param {number} a\n       * @param {number} b\n       *\n       * @return {number}\n       */\n      function numberSort(a, b) {\n\n          if (a > b) return 1;\n          if (b > a) return -1;\n          return 0;\n\n      }\n\n      /**\n       * Euclid GCD\n       *\n       * @param {number} a\n       * @param {number} b\n       *\n       * @returns {number}\n       *\n       *\n       */\n      function GCD(a, b) {\n\n          a = Math.abs(a);\n          b = Math.abs(b);\n\n          if (b > a) return GCD(b, a);\n\n          while (true) {\n              if (b === 0) return a;\n              a %= b;\n              if (a === 0) return b;\n              b %= a;\n          }\n\n      }\n      /**\n       * Euclid GCD on a set\n       *\n       * @param {number[]} set\n       *\n       * @returns {number}\n       */\n      function setGCD(set) {\n\n          if (set.length === 1) return set[0];\n\n          var gcd = set.pop();\n\n          return set.reduce(function (prev, curr) {\n\n              return GCD(prev, curr);\n\n          }, gcd);\n\n      }\n\n      /**\n       * @param {*} thing\n       *\n       * @returns {boolean}\n       */\n      function isDefined(thing) {\n\n          return typeof thing !== 'undefined';\n\n      }\n\n      /**\n       * @param {visibilityChangeHander} handler\n       */\n      /**\n       * @callback visibilityChangeHandler\n       * @private\n       *\n       * @param {bool} isHidden\n       */\n      function onVisibilityChange(handler) {\n\n          var visibilityChange,\n              hidden;\n\n          if (isDefined(document.hidden)) {\n\n              hidden = \"hidden\";\n              visibilityChange = \"visibilitychange\";\n\n          } else if (isDefined(document.mozHidden)) {\n\n              hidden = \"mozHidden\";\n              visibilityChange = \"mozvisibilitychange\";\n\n          } else if (isDefined(document.msHidden)) {\n\n              hidden = \"msHidden\";\n              visibilityChange = \"msvisibilitychange\";\n\n          } else if (isDefined(document.webkitHidden)) {\n\n              hidden = \"webkitHidden\";\n              visibilityChange = \"webkitvisibilitychange\";\n\n          }\n\n          if (visibilityChange) {\n\n              document.addEventListener(visibilityChange, function () {\n\n                  handler(document[hidden]);\n\n              });\n\n          } else {\n\n              window.addEventListener('blur', function () {\n\n                  handler(true);\n\n              });\n\n              window.addEventListener('focus', function () {\n\n                  handler(false);\n\n              });\n\n          }\n\n      }\n\n      /*\n       * Throttle function borrowed from:\n       * Underscore.js 1.5.2\n       * http://underscorejs.org\n       * (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors\n       * Underscore may be freely distributed under the MIT license.\n       */\n      function throttle(func, wait) {\n          var context, args, result;\n          var timeout = null;\n          var previous = 0;\n          var later = function () {\n              previous = new Date;\n              timeout = null;\n              result = func.apply(context, args);\n          };\n          return function () {\n              var now = new Date;\n              if (!previous) previous = now;\n              var remaining = wait - (now - previous);\n              context = this;\n              args = arguments;\n              if (remaining <= 0) {\n                  clearTimeout(timeout);\n                  timeout = null;\n                  previous = now;\n                  result = func.apply(context, args);\n              } else if (!timeout) {\n                  timeout = setTimeout(later, remaining);\n              }\n              return result;\n          };\n      }\n\n  })(document, window);\n  /*\n   * v2.1.0\n   * Created by the Google Analytics consultants at http://www.lunametrics.com/\n   * Written by @notdanwilkerson\n   * Documentation: https://www.lunametrics.com/labs/recipes/engagement-timer/\n   * Licensed under the MIT License\n   */\n  // Default configurations for Google Tag Manager Engagement Timer\n  (function(window) {\n\n    var gtmTimer = EngagementTimer({\n      every: [Number({{Const - Engagement Timer - Tracking Interval}})],\n      idleAfter: Number({{Const - Engagement Timer - Time Before Considered Idle}}),\n      engagementEvents: ['click', 'touchstart', 'scroll', 'keydown', 'mousemove'],\n      idleOnVisibilityChange: true,\n      max: Number({{Const - Engagement Timer - Max Time On Page}}),\n      min: Number({{Const - Engagement Timer - Min Time On Page}})\n    });\n\n    gtmTimer.on('interval', function(interval) {\n\n      window.dataLayer.push({\n        event: 'engagementTimer',\n        attributes: {\n          counter: interval.data.time\n        }\n      });\n\n    });\n    \n    gtmTimer.start();\n\n    // Clear the global, since it's unlikely to be used by others in this context\n    window.EngagementTimer = null;\n    \n  })(window);\n</script>"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "supportDocumentWrite",
+                        "value": "false"
+                    }
+                ],
+                "fingerprint": "1529860562300",
+                "firingTriggerId": [
+                    "2147479553"
+                ],
+                "parentFolderId": "9",
+                "tagFiringOption": "ONCE_PER_EVENT"
+            },
+            {
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "tagId": "6",
                 "name": "GA - Event - Engaged Time",
                 "type": "ua",
                 "parameter": [
@@ -110,46 +135,22 @@
                     {
                         "type": "TEMPLATE",
                         "key": "trackingId",
-                        "value": "{{YOUR_GA_TRACKING_ID}}"
+                        "value": "{{YOUR_GA_PROPERTY_ID}}"
                     }
                 ],
-                "fingerprint": "1509637483292",
+                "fingerprint": "1494004709452",
                 "firingTriggerId": [
-                    "1"
+                    "10"
                 ],
-                "parentFolderId": "10",
-                "tagFiringOption": "ONCE_PER_EVENT"
-            },
-            {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "tagId": "1",
-                "name": "GA Listener - Engagement Timer",
-                "type": "html",
-                "parameter": [
-                    {
-                        "type": "TEMPLATE",
-                        "key": "html",
-                        "value": "<script id=\"gtm-engagement-timer\" type=\"text/javascript\">\n/**\n * Engagement Timer\n *\n * Measure time interacting with a given context. Pair with a visibility tracker\n * for scroll-aware tracking.\n *\n * @example\n * ```javascript\n * var timer = EngagementTimer({\n *   each: [5 * 60, 10*60],\n *   every: [12],\n *   context: '#content',\n *   idleAfter: 5,\n *   engagementEvents: ['click', 'mousedown', 'touchstart', 'keydown', 'scroll'],\n *   startTime: +new Date,\n *   idleOnVisibilityChange: true,\n *   max: 60 * 15,\n *   min: 10\n * });\n *\n * timer.on('interval', function(evt) {\n *\n *   notifySomeService(evt.data.time);\n *\n * });\n * ```\n *\n * Tested on:\n * - Internet Explorer 9+\n * - Edge 16\n * - Chrome 62\n * - Firefox 56\n * - Opera 48\n * - Safari 11\n */\n(function(document, window) {\n\t'use strict';\n\n  var startTime = +new Date;\n\n  window.EngagementTimer = window.EngagementTimer || EngagementTimer;\n\n  /**\n   * Builds Interval objects\n   *\n   * @returns {Interval}\n   */\n  var IntervalFactory = (function() {\n\n    var intervalMap = {};\n    var id = 1;\n\n    /**\n\t\t * @name Interval\n     * @constructor\n     *\n     * @param {function} fn\n     * @param {number} interval - greater than 1000\n\t\t * @param {number} offset - initial timeout\n     */\n    function Interval(fn, interval, offset) {\n\n      if (interval < 1000) throw new Error('Interval is too frequent.');\n\n      var tid = this.tickId = (id++);\n\n\t\t\tif (offset) {\n\n\t\t\t\tintervalMap[tid] = setTimeout(function() {\n\n\t\t\t\t\tfn();\n\t\t\t\t\ttick(fn, interval, tid);\n\n\t\t\t\t}.bind(this), offset);\n\n\t\t\t} else {\n\n      \ttick(fn, interval, this.tickId);\n\n\t\t\t}\n\n    }\n\n    Interval.prototype.clear = function() {\n\n      clearTimeout(intervalMap[this.tickId]);\n\n    };\n\n    function tick(fn, interval, id) {\n\n      intervalMap[id] = setTimeout(function() {\n\n        fn();\n        tick(fn, interval, id);\n\n      }, interval);\n\n    }\n\n    return Interval;\n\n  })();\n  /**\n   * @name EngagementTimer\n   * Constructor for engagement timer\n   *\n   * @constructor\n   *\n   * @param opts {object} optsurations for timer\n   * @param opts.each {number[]} specific times to emit an event at, e.g. 4, 15\n   * @param opts.every {number[]} multiples to emit events every n seconds\n   * @param [opts.idleAfter] {number} number of seconds to wait before going idle and tracking pauses\n   * @param [opts.min] {number} minimum time in seconds before beginning to track events\n   * @param [opts.max] {number} maximum time in seconds to track events\n   * @param [opts.engagementEvents] {string[]} events to bind to that prevent idling\n   * @param [opts.idleOnVisibilityChange] {boolean} pause the timer when the tab is not visible\n   * @param [opts.startTime] {number} starting time to use when calculating time passed (defaults to when script runs or domInteractive timing)\n   * @param [opts.context] {HTMLElement|string} DOM element (or selector) to listen for engagementEvents on (defaults to document)\n\t *\n\t * @emits EngagementTimer#interval\n\t * @emits EngagementTimer#reset\n\t * @emits EngagementTimer#start\n\t * @emits EngagementTimer#pause\n\t */\n  function EngagementTimer(opts) {\n\n\t\tif (!opts.each && !opts.every) throw new Error('Requires opts.each or opts.every.');\n\n\t\tif (\n\t\t\t(opts.idleAfter || opts.engagementEvents) &&\n\t\t\t!(opts.idleAfter && opts.engagementEvents && opts.engagementEvents.length)\n\t\t) {\n\n\t\t\tthrow new Error('Configure opts.idleAfter & opts.engagementEvents for idling.');\n\n\t\t}\n\n\t\tif (!(this instanceof EngagementTimer)) return new EngagementTimer(opts);\n\n\t\tvar context = opts.context || document;\n\t\tvar throttledIdle;\n\n\t\tif (typeof context === 'string') context = document.querySelector(opts.context);\n\t\tif (!context) throw new Error('Unable to find context ' + opts.context);\n\n    this._context = context;\n    this._startTime = opts.startTime || startTime;\n    this._trackedTime = Math.ceil((+new Date - this._startTime) / 1000);\n    this._max = opts.max || Infinity;\n    this._min = opts.min || 0;\n    this._every = opts.every || [];\n    this._each = opts.each || [];\n\t\tthis._gcd = setGCD(this._every.concat(this._each));\n    this._each._originals = this._each.slice(0);\n    this._every._originals = this._every.slice(0);\n\t\tthis._events = {};\n    this._cache = {};\n\t\tthis._lastTick = this._startTime;\n\n\t\tsetTimeout(this.start.bind(this), 0);\n\n\t\tif (opts.idleAfter && opts.engagementEvents) {\n\n\t\t\tthis._idleAfter = opts.idleAfter * 1000 + 100;\n\t    this._idleTimer = this._resetIdleTimeout();\n\n\t\t\tthrottledIdle = throttle(this._preventIdle.bind(this), this._idleTimeout / 2);\n\n\t    opts.engagementEvents.forEach(function(engagementEvent) {\n\n\t      this._context.addEventListener(engagementEvent, throttledIdle);\n\n\t    }.bind(this));\n\n\t\t}\n\n\n    if (opts.idleOnVisibilityChange) {\n\n      onVisibilityChange(function(isHidden) {\n\n        isHidden ? this.pause() : this.start();\n\n      }.bind(this));\n\n    }\n\n  }\n\n\t/**\n\t * Starts an timer which counts the number of intervals since starting\n\t *\n\t * @param {number} [offset] - initial offset\n\t */\n  EngagementTimer.prototype._timer = function(offset) {\n\n    return new IntervalFactory(function() {\n\n\t\t\tvar d = +new Date;\n\n\t\t\tthis._trackedTime += Math.floor((d - this._lastTick) / 1000);\n\t\t\tthis._lastTick = d;\n\n    \tif (this._trackedTime < this._min) return;\n\t\t\tif (this._trackedTime > this._max) return this.destroy();\n\n\t\t\tthis._checkMarks();\n\n    }.bind(this), this._gcd * 1000, offset);\n\n  };\n\n  /**\n   * Registers an event listener\n   *\n   * @param {string} evt\n   * @param {function} handler\n   */\n  EngagementTimer.prototype.on = function(evt, handler) {\n\n    (this._events[evt] = this._events[evt] || []).push(handler);\n\n  };\n\n  /**\n   * Resets the timer\n   */\n  EngagementTimer.prototype.reset = function() {\n\n\t\tthis._each = this._each._originals.slice(0);\n\t\tthis._every = this._every._originals.slice(0);\n    this._trackedTime = 0;\n\t\tthis._startTime = +new Date;\n\t\tthis._cache = {};\n\n    this.emit('reset', {\n      data: {\n        timestamp: +new Date()\n      }\n    });\n\n  };\n\n  /**\n   * Starts the timer\n   */\n  EngagementTimer.prototype.start = function() {\n\n\t\tconsole.log(this._offset);\n    if (!this._tick) this._tick = this._timer(this._offset);\n\n    this.emit('start', {\n      data: {\n        timestamp: +new Date\n      }\n    });\n\n  };\n\n  /**\n   * Pauses the timer\n   */\n  EngagementTimer.prototype.pause = function() {\n\n\t\tvar d = +new Date;\n\n\t\tthis._offset = Math.floor((d - this._lastTick) / 1000);\n\n    if (this._tick) this._tick.clear();\n\n    this._tick = null;\n\t\tthis._running = 0;\n\n    this.emit('pause', {\n      data: {\n        timestamp: +new Date\n      }\n    });\n\n  };\n\n  /**\n   * Emits events to registered handlers\n   *\n   * @param {string} name\n   * @param {object} data\n   */\n  EngagementTimer.prototype.emit = function(name, data) {\n\n\t\tvar handlers = this._events[name];\n\n\t\tif (!handlers) return;\n\n    this._events[name].forEach(function(handler) {\n\n      setTimeout(function() {\n\n        handler(data);\n\n      }, 0);\n\n    });\n\n  };\n\n  /**\n   * Cleans up after itself\n   */\n  EngagementTimer.prototype.destroy = function() {\n\n  \tif (this._tick) this._tick.clear();\n\n  };\n\n  /**\n   * Checks the time elapsed and which times have been tracked\n   */\n  EngagementTimer.prototype._checkMarks = function() {\n\n    var curr = this._trackedTime;\n    var q = [];\n\n    loopAndCall(this._each, greaterThanCurr, checkMarksEachCb.bind(this));\n    loopAndCall(this._every, greaterThanCurr, checkMarksEveryCb.bind(this));\n\n    q.sort(numberSort).forEach(this._checkMark.bind(this));\n\n\t\t/**\n\t\t * @param {number} mark\n\t\t *\n\t\t * @returns {boolean}\n\t\t */\n    function greaterThanCurr(mark) {\n\n      return curr >= mark;\n\n    }\n\n\t\t/**\n\t\t * @param {number} mark\n\t\t * @param {number} index\n\t\t * @param {Array} arr\n\t\t *\n\t\t * @returns {boolean}\n\t\t */\n    function checkMarksEveryCb(mark, index, arr) {\n\t\t\t/* jshint validthis: true */\n\n      var orig = this._every._originals[index];\n\n      q.push(mark);\n      arr[index] = ((mark / orig) + 1) * orig;\n\n    }\n\n\t\t/**\n\t\t * @param {number} mark\n\t\t * @param {number} index\n\t\t *\n\t\t * @returns {boolean}\n\t\t */\n    function checkMarksEachCb(mark, index) {\n\t\t\t/* jshint validthis: true */\n\n      q = q.concat(this._each.slice(index, 1));\n\n    }\n\n  };\n\n  /**\n   * @param {number} mark\n   */\n  EngagementTimer.prototype._checkMark = function(mark) {\n\n    if (!this._cache[mark]) {\n\n      this._cache[mark] = true;\n      this.emit('interval', {\n        data: {\n          time: mark\n        }\n      });\n\n    }\n\n  };\n\n\t/**\n\t * Resets the idle timeout\n\t */\n  EngagementTimer.prototype._preventIdle = function() {\n\n\t\tif (!this._tick) this.start();\n\n    clearTimeout(this._idleTimer);\n    this._idleTimer = this._resetIdleTimeout();\n\n  };\n\n  /**\n   * Resets the timeout for the idle counter\n   */\n  EngagementTimer.prototype._resetIdleTimeout = function() {\n\n    return setTimeout(function() {\n\n      this.pause();\n\n    }.bind(this), this._idleAfter);\n\n  };\n\n\t/**\n\t * Loops through the array, applies the predicate, calls callback when true\n\t *\n\t * @param {Array} arr\n\t * @param {function} predicate\n\t * @param {function} cb\n\t */\n  function loopAndCall(arr, predicate, cb) {\n\n    var i;\n\n    for (i = arr.length - 1; i >= 0; i--) {\n\n      if (predicate(arr[i])) {\n\n        cb(arr[i], i, arr);\n\n      }\n\n    }\n\n  }\n\n\t/**\n\t * .sort() callback\n\t *\n\t * @param {number} a\n\t * @param {number} b\n\t *\n\t * @return {number}\n\t */\n  function numberSort(a, b) {\n\n    if (a > b) return 1;\n    if (b > a) return -1;\n    return 0;\n\n  }\n\n  /**\n   * Euclid GCD\n   *\n   * @param {number} a\n   * @param {number} b\n   *\n   * @returns {number}\n   *\n   *\n   */\n  function GCD(a, b) {\n\n    a = Math.abs(a);\n    b = Math.abs(b);\n\n    if (b > a) return GCD(b, a);\n\n    while (true) {\n      if (b === 0) return a;\n      a %= b;\n      if (a === 0) return b;\n      b %= a;\n    }\n\n  }\n  /**\n   * Euclid GCD on a set\n   *\n   * @param {number[]} set\n   *\n   * @returns {number}\n   */\n  function setGCD(set) {\n\n\t\tif (set.length === 1) return set[0];\n\n    var gcd = set.pop();\n\n    return set.reduce(function(prev, curr) {\n\n      return GCD(prev, curr);\n\n    }, gcd);\n\n  }\n\n  /**\n   * @param {*} thing\n   *\n   * @returns {boolean}\n   */\n  function isDefined(thing) {\n\n    return typeof thing !== 'undefined';\n\n  }\n\n  /**\n   * @param {visibilityChangeHander} handler\n   */\n  /**\n   * @callback visibilityChangeHandler\n\t * @private\n   *\n   * @param {bool} isHidden\n   */\n  function onVisibilityChange(handler) {\n\n    var visibilityChange,\n      \thidden;\n\n    if (isDefined(document.hidden)) {\n\n      hidden = \"hidden\";\n      visibilityChange = \"visibilitychange\";\n\n    } else if (isDefined(document.mozHidden)) {\n\n      hidden = \"mozHidden\";\n      visibilityChange = \"mozvisibilitychange\";\n\n    } else if (isDefined(document.msHidden)) {\n\n      hidden = \"msHidden\";\n      visibilityChange = \"msvisibilitychange\";\n\n    } else if (isDefined(document.webkitHidden)) {\n\n      hidden = \"webkitHidden\";\n      visibilityChange = \"webkitvisibilitychange\";\n\n    }\n\n    if (visibilityChange) {\n\n      document.addEventListener(visibilityChange, function() {\n\n        handler(document[hidden]);\n\n      });\n\n    } else {\n\n      window.addEventListener('blur', function() {\n\n        handler(true);\n\n      });\n\n      window.addEventListener('focus', function() {\n\n        handler(false);\n\n      });\n\n    }\n\n  }\n\n  /*\n   * Throttle function borrowed from:\n   * Underscore.js 1.5.2\n   * http://underscorejs.org\n   * (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors\n   * Underscore may be freely distributed under the MIT license.\n   */\n  function throttle(func, wait) {\n    var context, args, result;\n    var timeout = null;\n    var previous = 0;\n    var later = function() {\n      previous = new Date;\n      timeout = null;\n      result = func.apply(context, args);\n    };\n    return function() {\n      var now = new Date;\n      if (!previous) previous = now;\n      var remaining = wait - (now - previous);\n      context = this;\n      args = arguments;\n      if (remaining <= 0) {\n        clearTimeout(timeout);\n        timeout = null;\n        previous = now;\n        result = func.apply(context, args);\n      } else if (!timeout) {\n        timeout = setTimeout(later, remaining);\n      }\n      return result;\n    };\n  }\n\n})(document, window);\n/*\n * v2.0.0\n * Created by the Google Analytics consultants at http://www.lunametrics.com/\n * Written by @notdanwilkerson\n * Documentation: https://www.lunametrics.com/labs/recipes/engagement-timer/\n * Licensed under the MIT License\n */\n  \n(function(window) {\n  \n  var gtmTimer = EngagementTimer({\n    every: [Number({{Const - Engagement Timer - Tracking Interval}})],\n    idleAfter: Number({{Const - Engagement Timer - Time Before Considered Idle}}),\n    engagementEvents: ['click', 'touchstart', 'scroll', 'keydown', 'mousemove'],\n    idleOnVisibilityChange: true,\n    max: Number({{Const - Engagement Timer - Max Time On Page}}),\n    min: Number({{Const - Engagement Timer - Min Time On Page}})\n  });\n\n  gtmTimer.on('interval', function(interval) {\n    \n    window.dataLayer.push({\n      event: 'engagementTimer',\n      attributes: {\n        counter: interval.data.time\n      }\n    });\n\n  });\n  \n  delete window.EngagementTimer;\n\n})(window);\n</script>"
-                    },
-                    {
-                        "type": "BOOLEAN",
-                        "key": "supportDocumentWrite",
-                        "value": "false"
-                    }
-                ],
-                "fingerprint": "1509637406094",
-                "firingTriggerId": [
-                    "2147479553"
-                ],
+                "parentFolderId": "9",
                 "tagFiringOption": "ONCE_PER_EVENT"
             }
         ],
         "trigger": [
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "triggerId": "1",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "triggerId": "10",
                 "name": "Event - engagementTimer",
                 "type": "CUSTOM_EVENT",
                 "customEventFilter": [
@@ -169,15 +170,15 @@
                         ]
                     }
                 ],
-                "fingerprint": "1494004591626",
-                "parentFolderId": "10"
+                "fingerprint": "1494004709448",
+                "parentFolderId": "9"
             }
         ],
         "variable": [
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "variableId": "4",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "variableId": "11",
                 "name": "Const - Engagement Timer - Max Time On Page",
                 "type": "c",
                 "parameter": [
@@ -187,13 +188,13 @@
                         "value": "1800"
                     }
                 ],
-                "fingerprint": "1494004555680",
-                "parentFolderId": "10"
+                "fingerprint": "1494004709448",
+                "parentFolderId": "9"
             },
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "variableId": "5",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "variableId": "12",
                 "name": "Const - Engagement Timer - Min Time On Page",
                 "type": "c",
                 "parameter": [
@@ -203,45 +204,45 @@
                         "value": "0"
                     }
                 ],
-                "fingerprint": "1494004566588",
-                "parentFolderId": "10"
+                "fingerprint": "1494004709449",
+                "parentFolderId": "9"
             },
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "variableId": "2",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "variableId": "13",
                 "name": "Const - Engagement Timer - Time Before Considered Idle",
                 "type": "c",
                 "parameter": [
                     {
                         "type": "TEMPLATE",
                         "key": "value",
-                        "value": "65"
+                        "value": "60"
                     }
                 ],
-                "fingerprint": "1509637515205",
-                "parentFolderId": "10"
+                "fingerprint": "1494004709449",
+                "parentFolderId": "9"
             },
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "variableId": "3",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "variableId": "14",
                 "name": "Const - Engagement Timer - Tracking Interval",
                 "type": "c",
                 "parameter": [
                     {
                         "type": "TEMPLATE",
                         "key": "value",
-                        "value": "15"
+                        "value": "30"
                     }
                 ],
-                "fingerprint": "1509564587049",
-                "parentFolderId": "10"
+                "fingerprint": "1494004709450",
+                "parentFolderId": "9"
             },
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "variableId": "1",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "variableId": "15",
                 "name": "DLV - Engagement Timer Counter",
                 "type": "v",
                 "parameter": [
@@ -261,28 +262,28 @@
                         "value": "attributes.counter"
                     }
                 ],
-                "fingerprint": "1494004502641",
-                "parentFolderId": "10"
+                "fingerprint": "1494004709450",
+                "parentFolderId": "9"
             }
         ],
         "folder": [
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
-                "folderId": "10",
+                "accountId": "263956808",
+                "containerId": "2187017",
+                "folderId": "9",
                 "name": "LunaMetrics Engagement Timer Plugin",
-                "fingerprint": "1494004492494"
+                "fingerprint": "1494004709447"
             }
         ],
         "builtInVariable": [
             {
-                "accountId": "28896164",
-                "containerId": "1635401",
+                "accountId": "263956808",
+                "containerId": "2187017",
                 "type": "PAGE_URL",
                 "name": "Page URL"
             }
         ],
         "fingerprint": "0",
-        "tagManagerUrl": "https://tagmanager.google.com/#/versions/accounts/28896164/containers/1635401/versions/0?apiLink=version"
+        "tagManagerUrl": "https://tagmanager.google.com/#/versions/accounts/263956808/containers/2187017/versions/0?apiLink=version"
     }
 }

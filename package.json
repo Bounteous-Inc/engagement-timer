@@ -1,16 +1,19 @@
 {
   "name": "engagement-timer-google-analytics",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "User time on page engagement timer.",
   "main": "Gruntfile.js",
   "scripts": {
-    "test": "node_modules/karma/bin/karma start karma.conf.js  --singleRun"
+    "test": "node_modules/karma/bin/karma start karma.conf.js  --singleRun",
+		"build": "npm run test && npm run beautify && npx eslint src/ --fix && grunt",
+		"beautify": "npx js-beautify src/*.js --good-stuff -r"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LunaMetrics/engagement-timer-google-analytics"
   },
   "devDependencies": {
+    "eslint": "^5.0.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "~0.12.0",
     "grunt-contrib-uglify": "^0.9.1",
@@ -19,12 +22,17 @@
     "karma": "^1.7.1",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.4",
-    "phantomjs-prebuilt": "^2.1.15"
+    "karma-sinon": "^1.0.5",
+    "phantomjs-prebuilt": "^2.1.16",
+    "sinon": "^6.0.0"
   },
   "author": "LunaMetrics, LLC",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/LunaMetrics/engagement-timer-google-analytics/issues"
   },
-  "homepage": "https://github.com/LunaMetrics/engagement-timer-google-analytics#readme"
+  "homepage": "https://github.com/LunaMetrics/engagement-timer-google-analytics#readme",
+  "dependencies": {
+    "karma-chrome-launcher": "^2.2.0"
+  }
 }

@@ -5,7 +5,7 @@ module.exports = function(config) {
 
     basePath: './',
 
-    frameworks: ["jasmine"],
+    frameworks: ["jasmine", "sinon"],
 
     files: [
       'src/engagement-timer.js',
@@ -14,7 +14,7 @@ module.exports = function(config) {
 
     autoWatch: true,
 
-    browsers: ['PhantomJS']
+    browsers: ['Chrome']
 
   });
 };
