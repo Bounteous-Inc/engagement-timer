@@ -127,15 +127,21 @@
 
         this._max = opts.max * 1000 || Infinity;
         this._min = opts.min * 1000 || 0;
-        this._every = opts.every || [];
-        this._each = opts.each || [];
-        this._minInterval = 1000 * setGCD(this._every.concat(this._each));
-        this._each._originals = this._each.slice(0);
-        this._every._originals = this._every.slice(0);
+        this._every = (opts.every || []).map(function (n) {
+
+            return opts.min ? (opts.min % n) + n : 0;
+
+        });
+        this._every.initialValues = cleanMarks(opts.every || []);
+        this._each = cleanMarks(opts.each || []);
+        this._each.initialValues = this._each.slice(0);
+
+        this._minInterval = 1000 * setGCD(this._every.initialValues.concat(this._each.initialValues));
         this._idleAfter = opts.idleAfter * 1000 + 1 || null;
-        this._lastTick = opts.startTime || +new Date;
+        this._lastTick = opts.startTime;
+        this._trackedTime = this._lastTick ? +new Date - this._lastTick : 0;
+
         this._tickElapsed = 0;
-        this._trackedTime = 0;
         this._running = false;
         this._offset = 0;
         this._events = {};
@@ -150,25 +156,38 @@
             this._resetIdleTimeout();
 
         }.bind(this), this._idleTimeout / 2);
+        var boundHandler = function (evt) {
+
+            this._context.addEventListener(evt, throttledRestart);
+
+        }.bind(this);
+        var pausedOnHide;
 
         if (opts.engagementEvents) {
-
-            opts.engagementEvents.forEach(function (evt) {
-
-                this._context.addEventListener(evt, throttledRestart);
-
-            }.bind(this));
-
+            opts.engagementEvents.forEach(boundHandler);
         }
 
         if (opts.idleOnVisibilityChange) {
 
             onVisibilityChange(function (isHidden) {
 
-                isHidden ? this.pause() : this.start();
+                if (isHidden && this._running) {
+
+                    this.pause();
+                    pausedOnHide = true;
+
+                } else if (!isHidden && !this._running && pausedOnHide) {
+
+                    this.start();
+
+                }
 
             }.bind(this));
 
+        }
+
+        if (this._trackedTime) {
+            setTimeout(this._tick.bind(this), 0);
         }
 
     }
@@ -182,7 +201,7 @@
             this._Interval = new Interval(this._tick.bind(this), this._minInterval);
             this._tickElapsed = 0;
 
-        }.bind(this), this._minInterval - this._tickElapsed);
+        }.bind(this), Math.min(this._minInterval - this._tickElapsed, this._minInterval));
 
     };
 
@@ -221,8 +240,8 @@
 
     EngagementTimer.prototype.reset = function () {
 
-        this._each = this._each._originals.slice(0);
-        this._every = this._every._originals.slice(0);
+        this._each = this._each.initialValues.slice(0);
+        this._every = this._every.initialValues.slice(0);
         this._lastTick = +new Date;
         this._tickRemainder = 0;
         this._trackedTime = 0;
@@ -326,53 +345,50 @@
     EngagementTimer.prototype._checkMarks = function () {
 
         var curr = Math.floor(this._trackedTime / 1000);
-        var q = [];
+        var toCall = [];
+        var i = 0;
+        var intervals;
+        var memo;
+        var j;
+        var n;
 
-        loopAndCall(this._each, greaterThanCurr, checkMarksEachCb.bind(this));
-        loopAndCall(this._every, greaterThanCurr, checkMarksEveryCb.bind(this));
+        while (this._each.length) {
 
-        q.sort(numberSort).forEach(this._checkMark.bind(this));
+            n = this._each.shift();
 
-        /**
-         * @param {number} mark
-         *
-         * @returns {boolean}
-         */
-        function greaterThanCurr(mark) {
+            if (n > curr) {
+                this._each.unshift(n);
+                break;
+            }
 
-            return curr >= mark;
-
-        }
-
-        /**
-         * @param {number} mark
-         * @param {number} index
-         * @param {Array} arr
-         *
-         * @returns {boolean}
-         */
-        function checkMarksEveryCb(mark, index, arr) {
-            /* jshint validthis: true */
-
-            var orig = this._every._originals[index];
-
-            q.push(mark);
-            arr[index] = ((mark / orig) + 1) * orig;
+            toCall.push(n);
 
         }
 
-        /**
-         * @param {number} mark
-         * @param {number} index
-         *
-         * @returns {boolean}
-         */
-        function checkMarksEachCb(mark, index) {
-            /* jshint validthis: true */
+        while (i < this._every.length) {
 
-            q = q.concat(this._each.slice(index, 1));
+            n = this._every.initialValues[i];
+            memo = this._every[i];
+            j = 0;
+
+            i += 1;
+
+            if (memo <= curr) {
+
+                intervals = Math.floor((curr - memo) / n);
+
+                while (j < intervals) {
+                    j += 1;
+                    toCall.push(n * j + memo);
+                }
+
+                this._every[i - 1] = n * j;
+
+            }
 
         }
+
+        toCall.sort(ascendingSort).forEach(this._checkMark.bind(this));
 
     };
 
@@ -417,29 +433,6 @@
     };
 
     /**
-     * Loops through the array, applies the predicate, calls callback when true
-     *
-     * @param {Array} arr
-     * @param {function} predicate
-     * @param {function} cb
-     */
-    function loopAndCall(arr, predicate, cb) {
-
-        var i;
-
-        for (i = arr.length - 1; i >= 0; i--) {
-
-            if (predicate(arr[i])) {
-
-                cb(arr[i], i, arr);
-
-            }
-
-        }
-
-    }
-
-    /**
      * .sort() callback
      *
      * @param {number} a
@@ -447,11 +440,33 @@
      *
      * @return {number}
      */
-    function numberSort(a, b) {
+    function ascendingSort(a, b) {
 
         if (a > b) return 1;
         if (b > a) return -1;
         return 0;
+
+    }
+
+    /**
+     * Reduces and casts to number
+     * @param {*[]} configs
+     *
+     * @return {number[]}
+     */
+    function cleanMarks(arr) {
+
+        return arr.reduce(function (prev, curr) {
+
+            var n = Number(curr);
+
+            if (n) {
+                prev.push(n);
+            }
+
+            return prev;
+
+        }, []).sort(ascendingSort);
 
     }
 

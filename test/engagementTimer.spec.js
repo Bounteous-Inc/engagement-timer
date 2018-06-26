@@ -102,15 +102,15 @@ describe('engagement-timer', function() {
   it ('should not fire until trackedTime > opts.min', function(done) {
 
     var timer = window.EngagementTimer({
-      every: [1],
-      min: 2,
+      every: [5],
+      min: 10,
       startTime: new Date()
     });
 		timer.start();
 
     timer.on('interval', cb);
 
-		clock.tick(3001);
+		clock.tick(15001);
 
 		expect(cb.callCount).toEqual(2);
 
@@ -168,6 +168,52 @@ describe('engagement-timer', function() {
 		done();
 
   });
+
+	it ('should track from startTime', function(done) {
+
+    var timer = window.EngagementTimer({
+      every: [1],
+      idleOnVisibilityChange: true,
+      startTime: +new Date() - 5000
+    });
+		timer.on('interval', cb);
+		timer.start();
+
+		clock.tick(1001);
+
+		expect(cb.callCount).toEqual(6);
+
+		done();
+
+	});
+
+  it ('should not restart on visible if timer is paused', function(done) {
+
+    var timer = window.EngagementTimer({
+      every: [1],
+      idleOnVisibilityChange: true,
+      startTime: new Date()
+    });
+
+		sinon.spy(timer, 'start');
+		sinon.spy(timer, 'pause');
+
+		var docHidden = sandbox.stub(document, 'hidden');
+
+		docHidden.value(true);
+		document.dispatchEvent(new Event('visibilitychange'));
+
+		docHidden.value(false);
+		document.dispatchEvent(new Event('visibilitychange'));
+
+		clock.tick(1);
+
+		expect(timer.start.callCount).toEqual(0);
+		expect(timer.pause.callCount).toEqual(0);
+
+		done();
+
+	});
 
   it ('should go idle on window.blur if document.hidden doesn\'t exist', function(done) {
 
