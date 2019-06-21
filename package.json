@@ -5,21 +5,21 @@
   "main": "Gruntfile.js",
   "scripts": {
     "test": "node_modules/karma/bin/karma start karma.conf.js  --singleRun",
-		"build": "npm run test && npm run beautify && npx eslint src/ --fix && grunt",
-		"beautify": "npx js-beautify src/*.js --good-stuff -r"
+    "build": "npm run test && npm run beautify && npx eslint src/ --fix && grunt",
+    "beautify": "npx js-beautify src/*.js --good-stuff -r"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LunaMetrics/engagement-timer-google-analytics"
   },
   "devDependencies": {
-    "eslint": "^5.0.0",
-    "grunt": "^0.4.5",
+    "eslint": "^5.16.0",
+    "grunt": "^1.0.4",
     "grunt-contrib-jshint": "~0.12.0",
-    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-uglify": "^4.0.1",
     "jasmine-core": "^2.8.0",
     "js-beautify": "^1.7.4",
-    "karma": "^1.7.1",
+    "karma": "^4.1.0",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sinon": "^1.0.5",
